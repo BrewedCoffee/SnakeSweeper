@@ -9,7 +9,7 @@ int reveal(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, st
 int mark(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std::size_t yloc);
 bool isGameWon(char *board, std::size_t xdim, std::size_t ydim);
 
-//DONE
+//INSERT COMMENT HERE
 char *createBoard(std::size_t xdim, std::size_t ydim) {
 	std::size_t length = xdim * ydim;
 	char *array(new char[length]{0});
