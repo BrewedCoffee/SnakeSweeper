@@ -4,16 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../geesespotter.cpp \
-../geesespotter_lib.cpp 
+../sweepsnakes.cpp \
+../sweepsnakes_lib.cpp 
 
 OBJS += \
-./geesespotter.o \
-./geesespotter_lib.o 
+./sweepsnakes.o \
+./sweepsnakes_lib.o 
 
 CPP_DEPS += \
-./geesespotter.d \
-./geesespotter_lib.d 
+./sweepsnakes.d \
+./sweepsnakes_lib.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

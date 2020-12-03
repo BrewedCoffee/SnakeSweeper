@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cctype>
 #include <ctime>      // for time(NULL)
-#include "geesespotter_lib.h"
-#include "geesespotter.h"
+#include "sweepsnakes_lib.h"
+#include "sweepsnakes.h"
 
 int main()
 {
@@ -16,10 +16,10 @@ bool game()
 {
   std::size_t xdim {0};
   std::size_t ydim {0};
-  unsigned int numgeese {0};
+  unsigned int numsnakes {0};
   char * gameBoard {NULL};
 
-  startGame(gameBoard, xdim, ydim, numgeese);
+  startGame(gameBoard, xdim, ydim, numsnakes);
 
   char currAction {0};
   while(currAction != 'Q')
@@ -28,7 +28,7 @@ bool game()
     {
       case 'S' :  // show
       {
-        actionShow(gameBoard, xdim, ydim, numgeese);
+        actionShow(gameBoard, xdim, ydim, numsnakes);
         break;
       }
       case 'M' :  // mark
@@ -39,14 +39,14 @@ bool game()
       case 'R' :  // restart
       {
         std::cout << "Restarting the game." << std::endl;
-        startGame(gameBoard, xdim, ydim, numgeese);
+        startGame(gameBoard, xdim, ydim, numsnakes);
         break;
       }
     }
     printBoard(gameBoard, xdim, ydim);
-    if (isGameWon(gameBoard, xdim, ydim))
+    if (isWon(gameBoard, xdim, ydim))
     {
-      std::cout << "You have revealed all the fields without disturbing a goose!" << std::endl;
+      std::cout << "You have revealed all the fields without stepping on a snake!" << std::endl;
       std::cout << "YOU WON!!!" << std::endl;
       for (std::size_t reveal_row {0}; reveal_row < ydim; reveal_row++)
       {
@@ -57,18 +57,18 @@ bool game()
       }
       printBoard(gameBoard, xdim, ydim);
       std::cout << "Resetting the game board." << std::endl;
-      startGame(gameBoard, xdim, ydim, numgeese);
+      startGame(gameBoard, xdim, ydim, numsnakes);
     }
     currAction = getAction();
   }
 
-  cleanBoard(gameBoard);
+  clearBoard(gameBoard);
   return true;
 }
 
-void startGame(char * & board, std::size_t & xdim, std::size_t & ydim, unsigned int & numgeese)
+void startGame(char * & board, std::size_t & xdim, std::size_t & ydim, unsigned int & numsnakes)
 {
-  std::cout << "Welcome to GeeseSpotter!" << std::endl;
+  std::cout << "Welcome to SweepSnakes!" << std::endl;
   do {
     std::cout << "Please enter the x dimension (max " << xdim_max() << "): ";
     std::cin >> xdim;
@@ -78,19 +78,19 @@ void startGame(char * & board, std::size_t & xdim, std::size_t & ydim, unsigned 
     std::cin >> ydim;
   } while(ydim < 1 || ydim > ydim_max());
 
-  std::cout << "Please enter the number of geese: ";
-  std::cin >> numgeese;
-  while (numgeese > xdim * ydim)
+  std::cout << "Please enter the number of snakes: ";
+  std::cin >> numsnakes;
+  while (numsnakes > xdim * ydim)
   {
-    std::cout << "That's too many geese!" << std::endl;
-    std::cout << "Please enter the number of geese: ";
-    std::cin >> numgeese;
+    std::cout << "That's too many snakes!" << std::endl;
+    std::cout << "Please enter the number of snakes: ";
+    std::cin >> numsnakes;
   }
 
-  cleanBoard(board);
-  board = createBoard(xdim, ydim);
-  spreadGeese(board, xdim, ydim, numgeese);
-  computeNeighbors(board, xdim, ydim);
+  clearBoard(board);
+  board = makeBoard(xdim, ydim);
+  spreadSnakes(board, xdim, ydim, numsnakes);
+  computeSnakes(board, xdim, ydim);
   hideBoard(board, xdim, ydim);
 }
 
@@ -107,7 +107,7 @@ char getAction()
   return action;
 }
 
-void actionShow(char * & board, std::size_t & xdim, std::size_t & ydim, unsigned int & numgeese)
+void actionShow(char * & board, std::size_t & xdim, std::size_t & ydim, unsigned int & numsnakes)
 {
   std::size_t reveal_x {0};
   std::size_t reveal_y {0};
@@ -127,10 +127,10 @@ void actionShow(char * & board, std::size_t & xdim, std::size_t & ydim, unsigned
   }
   else if (reveal(board, xdim, ydim, reveal_x, reveal_y) == 9)
   {
-    std::cout << "You disturbed a goose! Your game has ended." << std::endl;
+    std::cout << "You disturbed a snake! Your game has ended." << std::endl;
     printBoard(board, xdim, ydim);
     std::cout << "Starting a new game." << std::endl;
-    startGame(board, xdim, ydim, numgeese);
+    startGame(board, xdim, ydim, numsnakes);
   }
 }
 
@@ -183,11 +183,11 @@ char valueMask()
   return 0x0F;
 }
 
-void spreadGeese(char * board, std::size_t xdim, std::size_t ydim, unsigned int numgeese)
+void spreadSnakes(char * board, std::size_t xdim, std::size_t ydim, unsigned int numsnakes)
 {
   if (board != NULL)
   {
-    for (unsigned int gen_goose {0}; gen_goose < numgeese; gen_goose++)
+    for (unsigned int gen_snake {0}; gen_snake < numsnakes; gen_snake++)
     {
       std::size_t try_position {0};
       do {
