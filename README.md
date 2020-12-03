@@ -2,7 +2,7 @@
  
 This is my version of the classic Minesweeper, coded in C++.  
 
-<img src="sweepsnakes.png"
+<img src="sweepsnakeslogo.png"
      alt="Sweepsnakes Icon"
      style="float: left; margin-right: 10px;" />
 
