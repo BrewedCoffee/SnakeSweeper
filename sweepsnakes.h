@@ -1,5 +1,5 @@
-#ifndef GEESESPOTTER_H
-#define GEESESPOTTER_H
+#ifndef SWEEPSNAKES_H
+#define SWEEPSNAKES_H
 
 char * makeBoard(std::size_t xdim, std::size_t ydim);
 void computeSnakes(char * board, std::size_t xdim, std::size_t ydim);

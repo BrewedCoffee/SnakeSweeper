@@ -20,85 +20,32 @@ char *makeBoard(std::size_t xdim, std::size_t ydim) {
 void computeSnakes (char *board, std::size_t xdim, std::size_t ydim) {
 
 	// Check every single tile in turn, starting from row 0 and column 0 and moving right
-	for (unsigned long int y = 0; y < ydim; y++) {
-		for (unsigned long int x = 0; x < xdim; x++) {
-
-			std::cout << "x is: " << x << " y is: " << y << std::endl;
-			std::cout << "value is: " << (int)board[y * xdim + x] << std::endl;
+	for (int y = 0; y < ydim; y++) {
+		for (int x = 0; x < xdim; x++) {
 
 			// If the tile is not a snake, compute # of neighboring snakes
 			if (board[y * xdim + x] != 9 ) {
 
-				std::cout << "oneman " << std::endl;
 				// Snake counter variable
-				unsigned long int snakecount{0};
+				int snakecount{0};
 
+				// Check a 3x3 around the selected tile
+				for (int check_y {y-1}; check_y <= y+1; check_y++) {
+					for (int check_x {x-1}; check_x <= x+1; check_x++) {
 
-				//   These if statements are meant to prevent the for loops from checking off the board
-				//   since the board is really just a single-dimensioned array, "negative" space can be
-				//   tiles on the previous row.
+						// Check tile is within dimensions
+						if (check_x < xdim && check_y < ydim && check_x >= 0 && check_y >= 0) {
 
-				// REPEAT: x and y = 0
-				/*
-				if (x == 0 and y == 0) {
-					//Now look at every single tile around it:
-					for (unsigned long int look_y {y}; look_y <= y+1; look_y++) {
-						for (unsigned long int look_x {x}; look_x <= x+1; look_x++) {
-							// Check if tile is within board dimensions
-							if (look_x < xdim && look_y < ydim && look_x >= 0 && look_y >= 0) {
-								// Is it a snake?
-								if (board[look_y * xdim + look_x] == 9) {
-									snakecount++;
-								}
-							}
-						}
-					}
-				}
-				// REPEAT 2: x but NOT y = 0
-				else if (x == 0 and y > 0) {
-					for (unsigned long int look_y {y-1}; look_y <= y+1; look_y++) {
-						for (unsigned long int look_x {x}; look_x <= x+1; look_x++) {
-							if (look_x < xdim && look_y < ydim && look_x >= 0 && look_y >= 0) {
-								if (board[look_y * xdim + look_x] == 9) {
-									snakecount++;
-								}
-							}
-						}
-					}
-				}
-				// REPEAT 3: NOT x but y = 0
-				else if (x > 0 and y == 0) {
-					for (unsigned long int look_y {y}; look_y <= y+1; look_y++) {
-						for (unsigned long int look_x {x-1}; look_x <= x+1; look_x++) {
-							if (look_x < xdim && look_y < ydim && look_x >= 0 && look_y >= 0) {
-								if (board[look_y * xdim + look_x] == 9) {
-									snakecount++;
-								}
+							if (board[check_y * xdim + check_x] == 9) {
+								snakecount++;
 							}
 						}
 					}
 				}
 
-				else { */
-					for (unsigned long int look_y {y-1}; look_y <= y+1; look_y++) {
-						for (unsigned long int look_x {x-1}; look_x <= x+1; look_x++) {
-
-//							std::cout << "look_x is: " << look_x << " look_y is: " << look_y << std::endl;
-
-							if (look_x < xdim && look_y < ydim && look_x >= 0 && look_y >= 0) {
-
-//								std::cout << "whassup" << std::endl;
-
-								if (board[look_y * xdim + look_x] == 9) {
-									snakecount++;
-								//}
-							}
-						}
-					}
-				}
-				//Now that # of neighbor snakes is known, assign the count to the tile
-				board[y*xdim + x] = snakecount;
-				snakecount = 0;
+			//Now that # of neighbor snakes is known, assign the count to the tile
+			board[y*xdim + x] = snakecount;
+			snakecount = 0;
 			}
 		}
 	}
@@ -106,11 +53,11 @@ void computeSnakes (char *board, std::size_t xdim, std::size_t ydim) {
 
 // Add hidden bit to every tile on the board
 void hideBoard(char *board, std::size_t xdim, std::size_t ydim) {
-/*	std::size_t length = xdim * ydim;
+	std::size_t length = xdim * ydim;
 	// Set bit 5 of every tile to 1
-	for (unsigned long int i = 0; i < length; i++) {
+	for (long unsigned int i = 0; i < length; i++) {
 		board[i] |= hiddenBit();
-	} */
+	}
 }
 
 // Cleaning up
@@ -122,8 +69,8 @@ void clearBoard(char *board) {
 // Prints the board
 void printBoard(char *board, std::size_t xdim, std::size_t ydim) {
 	int index = 0;
-	for (unsigned long int y = 0; y < ydim; y++) {
-		for (unsigned long int x = 0; x < xdim; x++) {
+	for (int y = 0; y < ydim; y++) {
+		for (int x = 0; x < xdim; x++) {
 			// Marked
 			if ( (board[index] & markedBit() ) == markedBit() ) {
 				std::cout<<'M';
@@ -145,6 +92,11 @@ void printBoard(char *board, std::size_t xdim, std::size_t ydim) {
 
 // Logic for revealing tiles
 int reveal(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std::size_t yloc) {
+
+	// Typecast from unsigned int to int
+	int x = (int)xloc;
+	int y = (int)yloc;
+
 	// MARKED=true
 	if ( (board[yloc * xdim + xloc] & markedBit() ) != 0) {
 		return 1;
@@ -163,66 +115,22 @@ int reveal(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, st
 	// If value=0, reveal surrounding tiles.
 	if ( (board[yloc*xdim+xloc] & valueMask() ) == 0) {
 
-		//   These if statements are meant to prevent the for loops from checking off the board
-		//   since the board is really just a single-dimensioned array, "negative" space can be
-		//   tiles on the previous row.
+		// Check a 3x3 around selected tile
+		for (int reveal_y {y-1}; reveal_y <= yloc + 1; reveal_y++) {
+			for (int reveal_x {x-1}; reveal_x <= xloc + 1; reveal_x++) {
 
-		// THIS BE A REPEAT. IF X AND Y ARE 0:
-
-		if ((yloc == 0) and (xloc == 0)){
-			for (unsigned long int reveal_y {yloc}; reveal_y <= yloc + 1; reveal_y++) {
-						for (unsigned long int reveal_x {xloc}; reveal_x <= xloc + 1; reveal_x++) {
-							// Check if tile is within board dimensions
-							if (reveal_x < xdim && reveal_y < ydim && reveal_x >= 0 && reveal_y >= 0) {
-								// Make sure the tile is NOT marked
-								if ( (board[reveal_y * xdim + reveal_x] & markedBit() ) == 0) {
-									// Reveal space
-									board[reveal_y * xdim + reveal_x] = board[reveal_y * xdim + reveal_x] & valueMask();
-								}
-							}
-						}
-					}
-		}
-		// REPEAT 2. IF X BUT NOT Y ARE 0.
-		else if ((yloc > 0) and (xloc == 0)){
-			for (unsigned long int reveal_y {yloc-1}; reveal_y <= yloc + 1; reveal_y++) {
-				for (unsigned long int reveal_x {xloc}; reveal_x <= xloc + 1; reveal_x++) {
-					if (reveal_x < xdim && reveal_y < ydim && reveal_x >= 0 && reveal_y >= 0) {
-						if ( (board[reveal_y * xdim + reveal_x] & markedBit() ) == 0) {
-							board[reveal_y * xdim + reveal_x] = board[reveal_y * xdim + reveal_x] & valueMask();
-						}
+				// Check tile within dimensions
+				if (reveal_x < xdim && reveal_y < ydim && reveal_x >= 0 && reveal_y >= 0) {
+					// Reveal only if tile is not marked
+					if ( (board[reveal_y * xdim + reveal_x] & markedBit() ) == 0) {
+						board[reveal_y * xdim + reveal_x] = board[reveal_y * xdim + reveal_x] & valueMask();
 					}
 				}
 			}
-		}
-		// REPEAT 3. IF NOT X BUT Y ARE 0.
-		else if ((yloc == 0) and (xloc > 0)){
-			for (unsigned long int reveal_y {yloc}; reveal_y <= yloc + 1; reveal_y++) {
-				for (unsigned long int reveal_x {xloc-1}; reveal_x <= xloc + 1; reveal_x++) {
-					if (reveal_x < xdim && reveal_y < ydim && reveal_x >= 0 && reveal_y >= 0) {
-						if ( (board[reveal_y * xdim + reveal_x] & markedBit() ) == 0) {
-							board[reveal_y * xdim + reveal_x] = board[reveal_y * xdim + reveal_x] & valueMask();
-						}
-					}
-				}
-			}
-		}
-		else {
-			for (unsigned long int reveal_y {yloc-1}; reveal_y <= yloc + 1; reveal_y++) {
-							for (unsigned long int reveal_x {xloc-1}; reveal_x <= xloc + 1; reveal_x++) {
-								// Check if tile is within board dimensions
-								if (reveal_x < xdim && reveal_y < ydim && reveal_x >= 0 && reveal_y >= 0) {
-									// Make sure the TILE is NOT MARKED
-									if ( (board[reveal_y * xdim + reveal_x] & markedBit() ) == 0) {
-										// Reveal space
-										board[reveal_y * xdim + reveal_x] = board[reveal_y * xdim + reveal_x] & valueMask();
-									}
-								}
-							}
-						}
 		}
 	}
-	// Otherwise, just reveal the space
+
+	// If tile is a snake, reveal the space
 	else {
 		board[yloc * xdim + xloc] = board[yloc * xdim + xloc] & valueMask();
 	}
@@ -231,14 +139,15 @@ int reveal(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, st
 
 // Handles logic for marking a tile
 int mark(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std::size_t yloc) {
-	// If it's not hidden, return 2.
+	// Check if already revealed
 	if ( (board[yloc * xdim + xloc] & hiddenBit() ) == 0) {
 		return 2;
 	}
-	// Otherwise see if MARK = false, then add mark..
+	// Otherwise if unmarked, then mark tile
 	if ( (board[yloc * xdim + xloc] & markedBit() ) == 0) {
 		board[yloc * xdim + xloc] |= markedBit();
 	}
+	// If marked, unmark tile
 	else {
 		board[yloc * xdim + xloc] ^= markedBit();
 	}
@@ -247,15 +156,19 @@ int mark(char *board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std:
 
 // Check if every single tile on the board fulfills the victory conditions
 bool isWon(char *board, std::size_t xdim, std::size_t ydim) {
-	unsigned long int win{0};
-	for (unsigned long int y = 0; y < ydim; y++) {
-		for (unsigned long int x = 0; x < xdim; x++) {
+	int win{0};
+
+	for (long unsigned int y = 0; y < ydim; y++) {
+		for (long unsigned int x = 0; x < xdim; x++) {
+			// Hidden snakes are good
 			if ( ( (board[y * xdim + x] & hiddenBit() ) == hiddenBit() ) and ((board[y * xdim + x] & valueMask()) == 9) ) {
 				win++;
 			}
+			// Marked snakes are good
 			else if ( ( (board[y * xdim + x] & markedBit() ) == markedBit() ) and ((board[y * xdim + x] & valueMask()) == 9) ) {
 				win++;
 			}
+			// Revealed tiles are good
 			else if ( (board[y * xdim + x] & hiddenBit() ) == 0) {
 				win++;
 			}
