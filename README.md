@@ -1,6 +1,6 @@
 # SweepSnakes
  
-This is my version of the classic ga,e Minesweeper, coded in C++.  
+This is my version of the classic Minesweeper game, coded in C++.  
 
 <img src="sweepsnakeslogo.png"
      alt="Sweepsnakes Icon"
