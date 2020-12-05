@@ -7,4 +7,4 @@ This is my version of the classic Minesweeper game, coded in C++.
      style="float: left; margin-right: 10px;" />
 
 I learned about headers, pointers, binary operations, and used a 1D array to represent a 2D space.  
-When selecting a tile, rows and columns start from 0!
+Keep in mind that when selecting a tile, rows and columns start from 0.
